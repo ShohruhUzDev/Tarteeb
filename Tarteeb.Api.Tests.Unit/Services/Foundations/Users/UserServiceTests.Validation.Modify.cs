@@ -259,5 +259,54 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
+
+
+        [Theory]
+        [MemberData(nameof(InvalidPassword))]
+        public async Task ShouldThrowValidationExceptionOnModifyIfIsNotValidPasswordAndLogItAsync(
+                 string invalidPassword)
+        {
+            // given
+            DateTimeOffset randomDateTime = GetRandomDateTimeOffset();
+            User randomInvalidUser = CreateRandomModifyUser(randomDateTime);
+            randomInvalidUser.Password = invalidPassword;
+            User invalidUser = randomInvalidUser;
+            var invalidUserException = new InvalidUserException();
+
+            invalidUserException.AddData(
+                key: nameof(User.Password),
+                values: "Password is not valid");
+
+            UserValidationException exceptedUserValidationException =
+                new UserValidationException(invalidUserException);
+
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime()).Returns(randomDateTime);
+
+            // when
+            ValueTask<User> modifyUserTask = this.userService.ModifyUserAsync(invalidUser);
+
+            UserValidationException actualUserValidationException =
+                await Assert.ThrowsAsync<UserValidationException>(modifyUserTask.AsTask);
+
+            // then
+            actualUserValidationException.Should().BeEquivalentTo(
+                exceptedUserValidationException);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                   exceptedUserValidationException))), Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertUserAsync(It.IsAny<User>()), Times.Never());
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }
