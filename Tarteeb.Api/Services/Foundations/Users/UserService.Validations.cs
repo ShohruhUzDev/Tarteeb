@@ -4,6 +4,7 @@
 //=================================
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using Tarteeb.Api.Models.Foundations.Users;
 using Tarteeb.Api.Models.Foundations.Users.Exceptions;
@@ -20,12 +21,12 @@ namespace Tarteeb.Api.Services.Foundations.Users
                 (Rule: IsInvalid(user.Id), Parameter: nameof(User.Id)),
                 (Rule: IsInvalid(user.FirstName), Parameter: nameof(User.FirstName)),
                 (Rule: IsInvalid(user.LastName), Parameter: nameof(User.LastName)),
-                (Rule: IsInvalid(user.Email), Parameter: nameof(User.Email)),
                 (Rule: IsInvalid(user.BirthDate), Parameter: nameof(User.BirthDate)),
                 (Rule: IsInvalid(user.CreatedDate), Parameter: nameof(User.CreatedDate)),
                 (Rule: IsInvalid(user.UpdatedDate), Parameter: nameof(User.UpdatedDate)),
                 (Rule: IsNotRecent(user.CreatedDate), Parameter: nameof(User.CreatedDate)),
                 (Rule: IsInvalidPassword(user.Password), Parameter: nameof(User.Password)),
+                (Rule: IsInvalidEmail(user.Email), Parameter: nameof(User.Email)),
 
                 (Rule: IsNotSame(
                     firstDate: user.CreatedDate,
@@ -88,12 +89,26 @@ namespace Tarteeb.Api.Services.Foundations.Users
                 (Rule: IsNotRecent(user.UpdatedDate), Parameter: nameof(User.UpdatedDate)));
         }
 
+        private bool IsInvalidEmailRule(string email)
+        {
+            var isValidEmail = new EmailAddressAttribute();
+            bool isValid = isValidEmail.IsValid(email);
+
+            return !isValid;
+        }
+
+        private dynamic IsInvalidEmail(string email) => new
+        {
+            Condition = IsInvalidEmailRule(email),
+            Message = "Email is not valid"
+        };
+
         private bool IsInvalidPasswordRule(string password)
         {
             string pattern = "^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$";
             var regex = new Regex(pattern);
-
             bool b = !regex.IsMatch(password);
+          
             return b;
         }
 

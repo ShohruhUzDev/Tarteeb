@@ -64,6 +64,46 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
             };
         }
 
+        public static string GetRandomEmail()
+        {
+            var chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+            var stringChars = new char[8];
+            var random = new Random();
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[random.Next(chars.Length)];
+            }
+
+            var domain = new String(stringChars);
+            var email = domain + "@" + domain + ".com";
+
+            return email;
+        }
+        public static string GetInvalidEmail()
+        {
+            var chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+            var stringChars = new char[8];
+            var random = new Random();
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[random.Next(chars.Length)];
+            }
+
+            var invalidEmail = new String(stringChars) + ".com";
+
+            return invalidEmail;
+        }
+
+        public static TheoryData<string> InvalidEmail()
+        {
+            return new TheoryData<string>
+            {
+               GetInvalidEmail()
+            };
+        }
+
         public static TheoryData<string> InvalidPassword()
         {
             var invalidPassword = new Password()
@@ -150,7 +190,8 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
 
             filler.Setup()
                 .OnType<DateTimeOffset>().Use(dates)
-                .OnProperty(user => user.Password).Use(GetRandomPassword());
+                .OnProperty(user => user.Password).Use(GetRandomPassword())
+                 .OnProperty(user => user.Email).Use(GetRandomEmail());
 
             return filler;
         }
