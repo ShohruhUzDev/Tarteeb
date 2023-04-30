@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Runtime.Serialization;
 using Microsoft.Data.SqlClient;
 using Moq;
+using PasswordGenerator;
 using Tarteeb.Api.Brokers.DateTimes;
 using Tarteeb.Api.Brokers.Loggings;
 using Tarteeb.Api.Brokers.Storages;
@@ -63,8 +64,35 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
             };
         }
 
+        public static TheoryData<string> InvalidPassword()
+        {
+            var invalidPassword = new Password()
+                .IncludeLowercase().IncludeSpecial().IncludeNumeric();
+
+            return new TheoryData<string>
+            {
+                invalidPassword.Next()
+            };
+        }
+
+        public static string GetInvalidPassword()
+        {
+            var invalidPassword = new Password()
+                .IncludeLowercase().IncludeSpecial().IncludeNumeric();
+
+            return invalidPassword.Next();
+        }
+
+        private static string GetRandomPassword()
+        {
+            var password = new Password()
+                .IncludeLowercase().IncludeUppercase().IncludeSpecial().IncludeNumeric();
+
+            return password.Next();
+        }
+
         private static User CreateRandomUser() =>
-            CreateUserFiller(dates: GetRandomDateTimeOffset()).Create();
+             CreateUserFiller(dates: GetRandomDateTimeOffset()).Create();
 
         private static User CreateRandomUser(DateTimeOffset dates) =>
             CreateUserFiller(dates).Create();
@@ -121,7 +149,8 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
             var filler = new Filler<User>();
 
             filler.Setup()
-                .OnType<DateTimeOffset>().Use(dates);
+                .OnType<DateTimeOffset>().Use(dates)
+                .OnProperty(user => user.Password).Use(GetRandomPassword());
 
             return filler;
         }

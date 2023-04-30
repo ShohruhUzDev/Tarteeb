@@ -4,6 +4,7 @@
 //=================================
 
 using System;
+using System.Text.RegularExpressions;
 using Tarteeb.Api.Models.Foundations.Users;
 using Tarteeb.Api.Models.Foundations.Users.Exceptions;
 
@@ -24,7 +25,7 @@ namespace Tarteeb.Api.Services.Foundations.Users
                 (Rule: IsInvalid(user.CreatedDate), Parameter: nameof(User.CreatedDate)),
                 (Rule: IsInvalid(user.UpdatedDate), Parameter: nameof(User.UpdatedDate)),
                 (Rule: IsNotRecent(user.CreatedDate), Parameter: nameof(User.CreatedDate)),
-                (Rule: IsInvalid(user.Password), Parameter: nameof(User.Password)),
+                (Rule: IsInvalidPassword(user.Password), Parameter: nameof(User.Password)),
 
                 (Rule: IsNotSame(
                     firstDate: user.CreatedDate,
@@ -75,7 +76,7 @@ namespace Tarteeb.Api.Services.Foundations.Users
                 (Rule: IsInvalid(user.BirthDate), Parameter: nameof(User.BirthDate)),
                 (Rule: IsInvalid(user.CreatedDate), Parameter: nameof(User.CreatedDate)),
                 (Rule: IsInvalid(user.UpdatedDate), Parameter: nameof(User.UpdatedDate)),
-                (Rule: IsInvalid(user.Password), Parameter: nameof(User.Password)),
+                (Rule: IsInvalidPassword(user.Password), Parameter: nameof(User.Password)),
 
                 (Rule: IsSame(
                     firstDate: user.UpdatedDate,
@@ -86,6 +87,21 @@ namespace Tarteeb.Api.Services.Foundations.Users
 
                 (Rule: IsNotRecent(user.UpdatedDate), Parameter: nameof(User.UpdatedDate)));
         }
+
+        private bool IsInvalidPasswordRule(string password)
+        {
+            string pattern = "^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$";
+            var regex = new Regex(pattern);
+
+            bool b = !regex.IsMatch(password);
+            return b;
+        }
+
+        private dynamic IsInvalidPassword(string password) => new
+        {
+            Condition = IsInvalidPasswordRule(password),
+            Message = "Password is not valid"
+        };
 
         private dynamic IsNotRecent(DateTimeOffset date) => new
         {

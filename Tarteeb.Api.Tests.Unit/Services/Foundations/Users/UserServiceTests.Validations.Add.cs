@@ -57,7 +57,8 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
             // given
             var invalidUser = new User
             {
-                FirstName = invalidString
+                FirstName = invalidString,
+                Password = GetInvalidPassword()
             };
 
             var invalidUserException = new InvalidUserException();
@@ -75,10 +76,6 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
                 values: "Text is required");
 
             invalidUserException.AddData(
-                key: nameof(User.Email),
-                values: "Text is required");
-
-            invalidUserException.AddData(
                 key: nameof(User.BirthDate),
                 values: "Value is required");
 
@@ -92,7 +89,11 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
 
             invalidUserException.AddData(
                 key: nameof(User.Password),
-                values: "Text is required");
+                values: "Password is not valid");
+
+            invalidUserException.AddData(
+               key: nameof(User.Email),
+               values: "Text is required");
 
             var expectedUserValidationException = new UserValidationException(
                 invalidUserException);
@@ -178,6 +179,53 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
             invalidUserException.AddData(
                 key: nameof(User.CreatedDate),
                 values: "Date is not recent");
+
+            UserValidationException exceptedUserValidationException =
+                new UserValidationException(invalidUserException);
+
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime()).Returns(randomDateTime);
+
+            // when
+            ValueTask<User> addUserTask = this.userService.AddUserAsync(invalidUser);
+
+            UserValidationException actualUserValidationException =
+                await Assert.ThrowsAsync<UserValidationException>(addUserTask.AsTask);
+
+            // then
+            actualUserValidationException.Should().BeEquivalentTo(
+                exceptedUserValidationException);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                   exceptedUserValidationException))), Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertUserAsync(It.IsAny<User>()), Times.Never());
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidPassword))]
+        public async Task ShouldThrowValidationExceptionOnAddIfIsNotValidPasswordAndLogItAsync(
+           string invalidPassword)
+        {
+            // given
+            DateTimeOffset randomDateTime = GetRandomDateTimeOffset();
+            User randomInvalidUser = CreateRandomUser(randomDateTime);
+            randomInvalidUser.Password = invalidPassword;
+            User invalidUser = randomInvalidUser;
+            var invalidUserException = new InvalidUserException();
+
+            invalidUserException.AddData(
+                key: nameof(User.Password),
+                values: "Password is not valid");
 
             UserValidationException exceptedUserValidationException =
                 new UserValidationException(invalidUserException);

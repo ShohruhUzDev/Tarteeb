@@ -56,7 +56,8 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
             // given
             var invalidUser = new User
             {
-                FirstName = invalidText
+                FirstName = invalidText,
+                Password=GetInvalidPassword()
             };
 
             var invalidUserException = new InvalidUserException();
@@ -91,7 +92,7 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
 
             invalidUserException.AddData(
                key: nameof(User.Password),
-               values: "Text is required");
+               values: "Password is not valid");
 
             var expectedUserValidationException = new UserValidationException(
                 invalidUserException);
