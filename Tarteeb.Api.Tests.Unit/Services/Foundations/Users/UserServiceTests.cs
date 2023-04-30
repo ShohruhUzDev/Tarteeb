@@ -80,6 +80,7 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
 
             return email;
         }
+
         public static string GetInvalidEmail()
         {
             var chars = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -191,7 +192,7 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations.Users
             filler.Setup()
                 .OnType<DateTimeOffset>().Use(dates)
                 .OnProperty(user => user.Password).Use(GetRandomPassword())
-                 .OnProperty(user => user.Email).Use(GetRandomEmail());
+                .OnProperty(user => user.Email).Use(GetRandomEmail());
 
             return filler;
         }
