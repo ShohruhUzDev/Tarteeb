@@ -38,11 +38,11 @@ namespace Tarteeb.Api.Services.Orchestrations
         public ValueTask<User> CreateUserAccountAsync(User user, string requestUrl) =>
         TryCatch(async () =>
         {
-            user.Password=this.securityService.HashPassword(user.Password);
+            user.Password = this.securityService.HashPassword(user.Password);
             User persistedUser = await this.userService.AddUserAsync(user);
             Email email = CreateUserEmail(persistedUser, requestUrl);
-            
-            //Diyorjon tomonidan comentga olindi, sababi serverda email yuvorilmayapti
+
+            //Commented by Diorjon, the reason is that the email is not being sent to the server
             //await this.emailService.SendEmailAsync(email);
 
             return persistedUser;

@@ -4,9 +4,10 @@
 //=================================
 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using Moq;
-using PasswordGenerator;
 using Tarteeb.Api.Brokers.Loggings;
 using Tarteeb.Api.Brokers.Tokens;
 using Tarteeb.Api.Models.Foundations.Users;
@@ -35,20 +36,47 @@ public partial class SecurityServiceTests
 
     private static string GetRandomPassword()
     {
-        var password = new Password()
-            .IncludeLowercase().IncludeUppercase().IncludeSpecial().IncludeNumeric();
+        const int minLength = 8;
+        const string uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const string lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+        const string digitChars = "0123456789";
+        const string specialChars = "!@#$%^&*()";
+        const string allChars = uppercaseChars + lowercaseChars + digitChars + specialChars;
 
-        return password.Next();
+        StringBuilder res = new StringBuilder();
+        Random rnd = new Random();
+
+        int length = rnd.Next(minLength, minLength * 2);
+        res.Append(uppercaseChars[rnd.Next(uppercaseChars.Length)]);
+        res.Append(lowercaseChars[rnd.Next(lowercaseChars.Length)]);
+        res.Append(digitChars[rnd.Next(digitChars.Length)]);
+        res.Append(specialChars[rnd.Next(specialChars.Length)]);
+        
+        for (int i = 4; i < length; i++)
+            res.Append(allChars[rnd.Next(allChars.Length)]);
+
+        return new string(res.ToString().ToCharArray().OrderBy(x => rnd.Next()).ToArray());
+    }
+
+    public static string GetInvalidRandomPassword()
+    {
+        const int minLength = 8;
+        const string allChars = "abcdefghijklmnopqrstuvwxyz";
+        StringBuilder res = new StringBuilder();
+        Random rnd = new Random();
+        int length = rnd.Next(minLength, minLength * 2);
+
+        for (int i = 0; i < length; i++)
+            res.Append(allChars[rnd.Next(allChars.Length)]);
+
+        return res.ToString();
     }
 
     public static TheoryData<string> InvalidPassword()
     {
-        var invalidPassword = new Password()
-            .IncludeLowercase().IncludeSpecial().IncludeNumeric();
-
         return new TheoryData<string>
             {
-                invalidPassword.Next()
+                GetInvalidRandomPassword()
             };
     }
 
