@@ -10,4 +10,5 @@ namespace Tarteeb.Api.Services.Foundations.Securities;
 public interface ISecurityService
 {
     string CreateToken(User user);
+    string HashPassword(string password);
 }

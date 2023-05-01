@@ -30,6 +30,9 @@ public partial class SecurityService : ISecurityService
         return tokenBroker.GenerateJWT(user);
     });
 
-
+    public string HashPassword(string password)
+    {
+        return tokenBroker.HashToken(password);
+    }
 
 }

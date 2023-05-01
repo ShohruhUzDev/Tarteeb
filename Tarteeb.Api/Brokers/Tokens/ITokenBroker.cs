@@ -10,5 +10,6 @@ namespace Tarteeb.Api.Brokers.Tokens
     public interface ITokenBroker
     {
         string GenerateJWT(User user);
+        string HashToken(string password);
     }
 }

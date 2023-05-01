@@ -9,7 +9,6 @@ using Force.DeepCloner;
 using Moq;
 using Tarteeb.Api.Models.Foundations.Emails;
 using Tarteeb.Api.Models.Foundations.Users;
-using Tynamix.ObjectFiller;
 using Xunit;
 
 namespace Tarteeb.Api.Tests.Unit.Services.Orchestrations
@@ -33,7 +32,11 @@ namespace Tarteeb.Api.Tests.Unit.Services.Orchestrations
                 service.AddUserAsync(inputUser))
                     .ReturnsAsync(persistedUser);
 
-            //Diyorjon komentga oldi, sababi UserCreate qilayotgan emailga send qilmaydi  ham komentga olingan
+            this.securityServiceMock.Setup(service =>
+               service.HashPassword(inputUser.Password))
+                   .Returns(persistedUser.Password);
+
+            //Diorjon commented, the reason why UserCreate does not send to the email was also commented
             //this.emailServiceMock.Setup(service =>
             //    service.SendEmailAsync(emailToSend))
             //        .ReturnsAsync(deliveredEmail);
@@ -48,7 +51,10 @@ namespace Tarteeb.Api.Tests.Unit.Services.Orchestrations
             this.userServiceMock.Verify(service =>
                 service.AddUserAsync(inputUser), Times.Once);
 
-            //Diyorjon komentga oldi, sababi UserCreate qilayotgan emailga send qilmaydi  ham komentga olingan
+            this.securityServiceMock.Verify(service =>
+                service.HashPassword(inputUser.Password), Times.Once);
+
+            //Diorjon commented, the reason why UserCreate does not send to the email was also commented
             //this.emailServiceMock.Verify(service =>
             //     service.SendEmailAsync(It.IsAny<Email>()), Times.Once);
 

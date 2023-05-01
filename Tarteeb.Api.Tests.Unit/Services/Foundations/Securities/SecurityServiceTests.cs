@@ -34,7 +34,7 @@ public partial class SecurityServiceTests
     private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
         actualException => actualException.SameExceptionAs(expectedException);
 
-    private string CreateRandomString() =>
+    private static string CreateRandomString() =>
         new MnemonicString().GetValue();
 
     private static User CreateRandomUser() =>
