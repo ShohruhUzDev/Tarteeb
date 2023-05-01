@@ -37,5 +37,4 @@ public partial class SecurityService : ISecurityService
 
         return tokenBroker.HashToken(password);
     });
-
 }

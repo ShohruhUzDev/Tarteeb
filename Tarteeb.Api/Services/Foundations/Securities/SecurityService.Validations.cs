@@ -32,7 +32,7 @@ namespace Tarteeb.Api.Services.Foundations.Securities
         {
             string pattern = "^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$";
             var regex = new Regex(pattern);
-           
+
             return !regex.IsMatch(password);
         }
 

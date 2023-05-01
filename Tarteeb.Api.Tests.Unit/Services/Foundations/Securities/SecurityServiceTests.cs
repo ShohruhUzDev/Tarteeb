@@ -70,7 +70,7 @@ public partial class SecurityServiceTests
 
         filler.Setup()
             .OnType<DateTimeOffset>().Use(dates)
-            .OnProperty(user=>user.Password).Use(GetRandomPassword());
+            .OnProperty(user => user.Password).Use(GetRandomPassword());
 
         return filler;
     }

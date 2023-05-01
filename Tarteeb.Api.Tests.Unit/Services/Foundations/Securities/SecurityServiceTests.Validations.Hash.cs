@@ -3,8 +3,6 @@
 // Free to use to bring order in your workplace
 //=================================
 
-using System.Threading.Tasks;
-using System;
 using FluentAssertions;
 using Moq;
 using Tarteeb.Api.Models.Foundations.Users;
@@ -36,7 +34,7 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations
 
             //when
             UserValidationException actualUserValidationException =
-                Assert.Throws<UserValidationException>(() => 
+                Assert.Throws<UserValidationException>(() =>
                     this.securityService.HashPassword(invalidPassword));
 
             //then
@@ -70,8 +68,6 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations
 
             UserValidationException exceptedUserValidationException =
                 new UserValidationException(invalidUserException);
-
-
 
             // when
             UserValidationException actualUserValidationException =
