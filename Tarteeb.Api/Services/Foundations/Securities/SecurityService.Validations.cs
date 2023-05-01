@@ -20,6 +20,9 @@ namespace Tarteeb.Api.Services.Foundations.Securities
                 (Rule: IsInvalid(user.Email), Parameter: nameof(User.Email)));
         }
 
+        private void ValidatePassword(string password) =>
+           Validate((Rule: IsInvalid(password), Parameter: nameof(User.Password)));
+
         private static dynamic IsInvalid(string text) => new
         {
             Condition = string.IsNullOrWhiteSpace(text),

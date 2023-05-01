@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//=================================
+// Copyright (c) Coalition of Good-Hearted Engineers
+// Free to use to bring order in your workplace
+//=================================
+
 using FluentAssertions;
 using Moq;
-using Tarteeb.Api.Models.Foundations.Users;
-using Tarteeb.Api.Services.Foundations.Securities;
 using Xunit;
 
 namespace Tarteeb.Api.Tests.Unit.Services.Foundations
