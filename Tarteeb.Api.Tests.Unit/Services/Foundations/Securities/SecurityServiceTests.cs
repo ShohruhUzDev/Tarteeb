@@ -6,12 +6,14 @@
 using System;
 using System.Linq.Expressions;
 using Moq;
+using PasswordGenerator;
 using Tarteeb.Api.Brokers.Loggings;
 using Tarteeb.Api.Brokers.Tokens;
 using Tarteeb.Api.Models.Foundations.Users;
 using Tarteeb.Api.Services.Foundations.Securities;
 using Tynamix.ObjectFiller;
 using Xeptions;
+using Xunit;
 
 namespace Tarteeb.Api.Tests.Unit.Services.Foundations;
 
@@ -31,6 +33,25 @@ public partial class SecurityServiceTests
             loggingBrokerMock.Object);
     }
 
+    private static string GetRandomPassword()
+    {
+        var password = new Password()
+            .IncludeLowercase().IncludeUppercase().IncludeSpecial().IncludeNumeric();
+
+        return password.Next();
+    }
+
+    public static TheoryData<string> InvalidPassword()
+    {
+        var invalidPassword = new Password()
+            .IncludeLowercase().IncludeSpecial().IncludeNumeric();
+
+        return new TheoryData<string>
+            {
+                invalidPassword.Next()
+            };
+    }
+
     private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
         actualException => actualException.SameExceptionAs(expectedException);
 
@@ -48,7 +69,8 @@ public partial class SecurityServiceTests
         var filler = new Filler<User>();
 
         filler.Setup()
-            .OnType<DateTimeOffset>().Use(dates);
+            .OnType<DateTimeOffset>().Use(dates)
+            .OnProperty(user=>user.Password).Use(GetRandomPassword());
 
         return filler;
     }

@@ -15,7 +15,7 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations
         public void ShouldHashPassword()
         {
             //given
-            string randomPassword = CreateRandomString();
+            string randomPassword = GetRandomPassword();
             string inputPassword = randomPassword;
             string expectedPassword = inputPassword;
 

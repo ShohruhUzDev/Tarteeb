@@ -4,6 +4,7 @@
 //=================================
 
 using System;
+using System.Text.RegularExpressions;
 using Tarteeb.Api.Models.Foundations.Users;
 using Tarteeb.Api.Models.Foundations.Users.Exceptions;
 
@@ -20,8 +21,26 @@ namespace Tarteeb.Api.Services.Foundations.Securities
                 (Rule: IsInvalid(user.Email), Parameter: nameof(User.Email)));
         }
 
-        private void ValidatePassword(string password) =>
-           Validate((Rule: IsInvalid(password), Parameter: nameof(User.Password)));
+        private void ValidatePassword(string password)
+        {
+            Validate(
+                (Rule: IsInvalid(password), Parameter: nameof(User.Password)),
+                (Rule: IsInvalidPassword(password), Parameter: nameof(User.Password)));
+        }
+
+        private bool IsInvalidPasswordRule(string password)
+        {
+            string pattern = "^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$";
+            var regex = new Regex(pattern);
+           
+            return !regex.IsMatch(password);
+        }
+
+        private dynamic IsInvalidPassword(string password) => new
+        {
+            Condition = IsInvalidPasswordRule(password),
+            Message = "Password is not valid"
+        };
 
         private static dynamic IsInvalid(string text) => new
         {

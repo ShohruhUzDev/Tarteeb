@@ -3,6 +3,8 @@
 // Free to use to bring order in your workplace
 //=================================
 
+using System.Threading.Tasks;
+using System;
 using FluentAssertions;
 using Moq;
 using Tarteeb.Api.Models.Foundations.Users;
@@ -14,10 +16,9 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations
     public partial class SecurityServiceTests
     {
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData(" ")]
-        public void ShouldThrowValidationExceptionOnHashPassworIfPasswordIsInvalidAndLogItAsync(
+        public void ShouldThrowValidationExceptionOnHashPasswordIfPasswordIsInvalidAndLogItAsync(
             string invalidString)
         {
             //given
@@ -27,7 +28,8 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations
 
             invalidUserException.AddData(
                 key: nameof(User.Password),
-                values: "Text is required");
+                 "Text is required",
+                 "Password is not valid");
 
             var expectedUserValidationException = new UserValidationException(
                 invalidUserException);
@@ -44,6 +46,45 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations
             this.loggingBrokerMock.Verify(broker =>
               broker.LogError(It.Is(SameExceptionAs(
                  expectedUserValidationException))), Times.Once);
+
+            this.tokenBrokerMock.Verify(broker =>
+              broker.HashToken(It.IsAny<string>()), Times.Never);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.tokenBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidPassword))]
+        public void ShouldThrowValidationExceptionOnOnHashPasswordIfIsNotValidPasswordAndLogItAsync(
+               string invalidstring)
+        {
+            // given
+            string randomPassword = invalidstring;
+            string invalidPassword = randomPassword;
+            var invalidUserException = new InvalidUserException();
+
+            invalidUserException.AddData(
+                key: nameof(User.Password),
+                values: "Password is not valid");
+
+            UserValidationException exceptedUserValidationException =
+                new UserValidationException(invalidUserException);
+
+
+
+            // when
+            UserValidationException actualUserValidationException =
+                 Assert.Throws<UserValidationException>(() =>
+                     this.securityService.HashPassword(invalidPassword));
+
+            // then
+            actualUserValidationException.Should().BeEquivalentTo(
+                exceptedUserValidationException);
+
+            this.loggingBrokerMock.Verify(broker =>
+              broker.LogError(It.Is(SameExceptionAs(
+                 exceptedUserValidationException))), Times.Once);
 
             this.tokenBrokerMock.Verify(broker =>
               broker.HashToken(It.IsAny<string>()), Times.Never);
