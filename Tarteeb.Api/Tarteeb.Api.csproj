@@ -1,21 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<ApplicationInsightsResourceId>/subscriptions/892dd3c3-3966-40a3-8503-76152027a3e7/resourceGroups/tarteeb/providers/microsoft.insights/components/tarteeb</ApplicationInsightsResourceId>
 		<UserSecretsId>2fffb16c-3e15-47b2-a365-20241733061f</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="EFxceptions" Version="0.4.5" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.16" />
 		<PackageReference Include="Microsoft.AspNetCore.OData" Version="8.0.12" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational.Design" Version="1.1.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0">
 			<PrivateAssets>all</PrivateAssets>
