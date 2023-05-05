@@ -14,11 +14,6 @@ var githubPipeline = new GithubPipeline
 
     OnEvents = new Events
     {
-        Push = new PushEvent
-        {
-            Branches = new string[] { "master" }
-        },
-
         PullRequest = new PullRequestEvent
         {
             Branches = new string[] { "master" }
