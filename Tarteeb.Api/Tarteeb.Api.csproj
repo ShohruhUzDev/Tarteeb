@@ -21,6 +21,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.25.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Postmark" Version="4.7.7" />
 		<PackageReference Include="RESTFulSense" Version="2.9.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
