@@ -41,7 +41,7 @@ namespace Tarteeb.Api.Services.Foundations.Emails
             }
             catch (Exception exception)
             {
-                var failedEmailServiceException = new FailedEmailServiceException(exception);
+                var failedEmailServiceException = new   (exception);
 
                 throw CreateAndLogServiceException(failedEmailServiceException);
             }
