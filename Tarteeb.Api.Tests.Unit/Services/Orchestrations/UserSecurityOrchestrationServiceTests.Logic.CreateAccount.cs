@@ -32,14 +32,9 @@ namespace Tarteeb.Api.Tests.Unit.Services.Orchestrations
                 service.AddUserAsync(inputUser))
                     .ReturnsAsync(persistedUser);
 
-            this.securityServiceMock.Setup(service =>
-               service.HashPassword(inputUser.Password))
-                   .Returns(persistedUser.Password);
-
-            //Diorjon commented, the reason why UserCreate does not send to the email was also commented
-            //this.emailServiceMock.Setup(service =>
-            //    service.SendEmailAsync(emailToSend))
-            //        .ReturnsAsync(deliveredEmail);
+            this.emailServiceMock.Setup(service =>
+                service.SendEmailAsync(emailToSend))
+                    .ReturnsAsync(deliveredEmail);
 
             // when
             User actualUser = await this.userSecurityOrchestrationService
@@ -51,12 +46,8 @@ namespace Tarteeb.Api.Tests.Unit.Services.Orchestrations
             this.userServiceMock.Verify(service =>
                 service.AddUserAsync(inputUser), Times.Once);
 
-            this.securityServiceMock.Verify(service =>
-                service.HashPassword(inputUser.Password), Times.Once);
-
-            //Diorjon commented, the reason why UserCreate does not send to the email was also commented
-            //this.emailServiceMock.Verify(service =>
-            //     service.SendEmailAsync(It.IsAny<Email>()), Times.Once);
+            this.emailServiceMock.Verify(service =>
+                 service.SendEmailAsync(It.IsAny<Email>()), Times.Once);
 
             this.userServiceMock.VerifyNoOtherCalls();
             this.emailServiceMock.VerifyNoOtherCalls();
