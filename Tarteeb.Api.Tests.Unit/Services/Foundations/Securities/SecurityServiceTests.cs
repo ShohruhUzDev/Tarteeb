@@ -51,7 +51,7 @@ public partial class SecurityServiceTests
         res.Append(lowercaseChars[rnd.Next(lowercaseChars.Length)]);
         res.Append(digitChars[rnd.Next(digitChars.Length)]);
         res.Append(specialChars[rnd.Next(specialChars.Length)]);
-        
+
         for (int i = 4; i < length; i++)
             res.Append(allChars[rnd.Next(allChars.Length)]);
 
@@ -60,7 +60,7 @@ public partial class SecurityServiceTests
 
     public static string GetInvalidRandomPassword()
     {
-        const int minLength = 8;
+        const int minLength = 2;
         const string allChars = "abcdefghijklmnopqrstuvwxyz";
         StringBuilder res = new StringBuilder();
         Random rnd = new Random();

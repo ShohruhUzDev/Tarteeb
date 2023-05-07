@@ -7,6 +7,7 @@ using FluentAssertions;
 using Moq;
 using Tarteeb.Api.Models.Foundations.Users;
 using Tarteeb.Api.Models.Foundations.Users.Exceptions;
+using Tarteeb.Api.Models.Securites.Exceptions;
 using Xunit;
 
 namespace Tarteeb.Api.Tests.Unit.Services.Foundations
@@ -56,18 +57,18 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations
                 Email = invalidString
             };
 
-            var invalidUserException = new InvalidUserException();
+            var insecurePasswordException = new InsecurePasswordException();
 
-            invalidUserException.AddData(
+            insecurePasswordException.AddData(
                 key: nameof(User.Id),
                 values: "Id is required");
 
-            invalidUserException.AddData(
+            insecurePasswordException.AddData(
                 key: nameof(User.Email),
                 values: "Text is required");
 
             var expectedUserValidationException = new UserValidationException(
-                invalidUserException);
+                insecurePasswordException);
 
             //when
             UserValidationException actualUserValidationException =

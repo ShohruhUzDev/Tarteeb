@@ -43,7 +43,7 @@ namespace Tarteeb.Api.Controllers
             }
             catch (UserOrchestrationDependencyValidationException userOrchestrationDependencyValidationException)
             {
-                return BadGateway(userOrchestrationDependencyValidationException.InnerException);
+                return BadRequest(userOrchestrationDependencyValidationException.InnerException);
             }
             catch (UserOrchestrationDependencyException userOrchestrationDependencyException)
             {

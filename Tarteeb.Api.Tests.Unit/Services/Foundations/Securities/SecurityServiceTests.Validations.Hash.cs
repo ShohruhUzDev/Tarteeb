@@ -5,8 +5,8 @@
 
 using FluentAssertions;
 using Moq;
-using Tarteeb.Api.Models.Foundations.Users;
 using Tarteeb.Api.Models.Foundations.Users.Exceptions;
+using Tarteeb.Api.Models.Securites.Exceptions;
 using Xunit;
 
 namespace Tarteeb.Api.Tests.Unit.Services.Foundations
@@ -22,15 +22,30 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations
             //given
             string invalidPassword = invalidString;
 
-            var invalidUserException = new InvalidUserException();
+            var invalidPasswordException = new InsecurePasswordException();
 
-            invalidUserException.AddData(
-                key: nameof(User.Password),
-                 "Text is required",
-                 "Password is not valid");
+            invalidPasswordException.AddData(
+                key: "Password",
+                values: "Text is required");
+
+            invalidPasswordException.AddData(
+                key: "LengthComplexity",
+                values: "At least 8 characters required");
+
+            invalidPasswordException.AddData(
+                key: "UpperCaseComplexity",
+                values: "At least one capital letter is required");
+
+            invalidPasswordException.AddData(
+                key: "SymbolComplexity",
+                values: "At least one symbol is required");
+
+            invalidPasswordException.AddData(
+                key: "DigitComplexity",
+                values: "At least one digit is required");
 
             var expectedUserValidationException = new UserValidationException(
-                invalidUserException);
+                invalidPasswordException);
 
             //when
             UserValidationException actualUserValidationException =
@@ -60,14 +75,26 @@ namespace Tarteeb.Api.Tests.Unit.Services.Foundations
             // given
             string randomPassword = invalidstring;
             string invalidPassword = randomPassword;
-            var invalidUserException = new InvalidUserException();
+            var invalidPasswordException = new InsecurePasswordException();
 
-            invalidUserException.AddData(
-                key: nameof(User.Password),
-                values: "Password is not valid");
+            invalidPasswordException.AddData(
+                key: "LengthComplexity",
+                values: "At least 8 characters required");
+
+            invalidPasswordException.AddData(
+                key: "UpperCaseComplexity",
+                values: "At least one capital letter is required");
+
+            invalidPasswordException.AddData(
+                key: "SymbolComplexity",
+                values: "At least one symbol is required");
+
+            invalidPasswordException.AddData(
+                key: "DigitComplexity",
+                values: "At least one digit is required");
 
             UserValidationException exceptedUserValidationException =
-                new UserValidationException(invalidUserException);
+                new UserValidationException(invalidPasswordException);
 
             // when
             UserValidationException actualUserValidationException =
