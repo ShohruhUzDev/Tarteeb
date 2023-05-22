@@ -21,12 +21,19 @@ namespace Tarteeb.Api.Tests.Unit.Services.Orchestrations
             // given
             string randomUrl = CreateRandomUrl();
             string requestUrl = randomUrl;
+            string plainPassword = GetRandomString();
+            string hashedPassword = plainPassword;
             User randomUser = CreateRandomUser();
+            randomUser.Password = hashedPassword;
             User inputUser = randomUser;
             User persistedUser = inputUser;
             User expectedUser = persistedUser.DeepClone();
             Email emailToSend = CreateUserEmail();
             Email deliveredEmail = emailToSend.DeepClone();
+
+            this.securityServiceMock.Setup(service =>
+                service.HashPassword(inputUser.Password))
+                    .Returns(hashedPassword);
 
             this.userServiceMock.Setup(service =>
                 service.AddUserAsync(inputUser))
@@ -42,6 +49,9 @@ namespace Tarteeb.Api.Tests.Unit.Services.Orchestrations
 
             // then
             actualUser.Should().BeEquivalentTo(expectedUser);
+
+            this.securityServiceMock.Verify(service =>
+                service.HashPassword(inputUser.Password), Times.Once());
 
             this.userServiceMock.Verify(service =>
                 service.AddUserAsync(inputUser), Times.Once);
