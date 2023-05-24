@@ -18,6 +18,27 @@ namespace Tarteeb.Api.Services.Orchestrations
                 (Rule: IsInvalid(password), Parameter: nameof(User.Password)));
         }
 
+        private static void ValidateUserAndRequestUrl(User user, string requestUrl)
+        {
+            Validate(
+                (Rule: IsInvalid(requestUrl), Parameter: "RequestUrl"),
+                (Rule: IsInvalid(user), Parameter: nameof(User)));
+        }
+
+        private static bool ValidateUserIsNullRule(User user)
+        {
+            if (user is null)
+                return true;
+
+            return false;
+        }
+
+        private static dynamic IsInvalid(User user) => new
+        {
+            Condition = ValidateUserIsNullRule(user),
+            Message = "User is required"
+        };
+
         private void ValidateUserExists(User user)
         {
             if (user is null)
