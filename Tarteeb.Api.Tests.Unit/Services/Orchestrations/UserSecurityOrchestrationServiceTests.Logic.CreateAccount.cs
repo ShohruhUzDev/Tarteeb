@@ -21,8 +21,7 @@ namespace Tarteeb.Api.Tests.Unit.Services.Orchestrations
             // given
             string randomUrl = CreateRandomUrl();
             string requestUrl = randomUrl;
-            string plainPassword = GetRandomString();
-            string hashedPassword = plainPassword;
+            string hashedPassword = GetRandomString();
             User randomUser = CreateRandomUser();
             randomUser.Password = hashedPassword;
             User inputUser = randomUser;
