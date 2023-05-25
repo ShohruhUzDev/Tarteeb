@@ -25,17 +25,9 @@ namespace Tarteeb.Api.Services.Orchestrations
                 (Rule: IsInvalid(user), Parameter: nameof(User)));
         }
 
-        private static bool ValidateUserIsNullRule(User user)
-        {
-            if (user is null)
-                return true;
-
-            return false;
-        }
-
         private static dynamic IsInvalid(User user) => new
         {
-            Condition = ValidateUserIsNullRule(user),
+            Condition = user is null,
             Message = "User is required"
         };
 
